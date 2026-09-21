@@ -44,19 +44,27 @@ The detector expects a sheet that looks like this:
 
 ## ⚙️ How It Works
 
-```mermaid
-flowchart LR
-    A[CameraX frame<br/>YUV_420_888] --> B[NV21 → RGB Mat]
-    B --> C[Fix rotation]
-    C --> D[Gray → Blur → Canny]
-    D --> E[Largest 4-point contour]
-    E --> F[Perspective warp]
-    F --> G{4 corner<br/>markers?}
-    G -- No --> H[Show warped preview]
-    G -- Yes --> I[Crop center]
-    I --> J[Find shape contour]
-    J --> K[Classify shape + color]
-    K --> L[Result screen]
+```
+ CameraX frame (YUV_420_888)
+          │
+          ▼
+ NV21 → RGB Mat  →  Fix rotation
+          │
+          ▼
+ Gray → Gaussian blur → Canny edges
+          │
+          ▼
+ Largest 4-point contour  →  Perspective warp
+          │
+          ▼
+   4 corner markers? ── No ──► Show warped preview
+          │
+         Yes
+          ▼
+ Crop center → Find shape contour → Classify shape + color
+          │
+          ▼
+    Result screen
 ```
 
 ### 1. Frame → OpenCV `Mat`
